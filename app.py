@@ -6,7 +6,8 @@ import os
 from PIL import Image
 import google.generativeai as genai
 
-genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+# Read the key from GOOGLE_API_KEY (older setups used GENAI_API_KEY)
+api_key = os.getenv("GOOGLE_API_KEY") or os.getenv("GENAI_API_KEY")
 model = genai.GenerativeModel("gemini-flash-latest")
 
 #Gemini response function
@@ -34,6 +35,11 @@ st.set_page_config(
     page_icon="💪",
     layout = "centered",
 )
+
+if not api_key:
+    st.error("No Gemini API key found. Copy .env.example to .env and set GOOGLE_API_KEY.")
+    st.stop()
+genai.configure(api_key=api_key)
 #sidebar
 st.sidebar.title("Robobill 💪💪")
 st.sidebar.write("Ai- powered expense assistant")
